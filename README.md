@@ -57,7 +57,8 @@
 
 Vertex implements a layered service architecture that keeps the controller layer thin, abstracts transactional domain business logic into dedicated services, and maintains authorization invariants via policies:
 
-┌─────────────────────────┐
+```text
+                            ┌─────────────────────────┐
                             │       HTTP Client       │
                             │ (Browser / REST API v1) │
                             └────────────┬────────────┘
