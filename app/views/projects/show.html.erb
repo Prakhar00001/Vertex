@@ -1,0 +1,101 @@
+<div class="p-6 max-w-7xl mx-auto">
+  <div class="flex items-center justify-between pb-6 border-b border-gray-200">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900"><%= @project.name %></h1>
+      <span class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Key: <%= @project.key %></span>
+    </div>
+    <div class="flex space-x-3">
+      <%= link_to "New Issue", new_project_task_path(org_slug: Current.organization.slug, project_id: @project.id), class: "inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700" %>
+    </div>
+  </div>
+
+  <!-- Board Columns -->
+  <div class="mt-6 grid grid-cols-1 md:grid-cols-5 gap-4">
+    <% Task::STATUSES.each do |status| %>
+      <div class="bg-gray-100 p-4 rounded-lg flex flex-col h-[calc(100vh-220px)]" data-status="<%= status %>">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-gray-700"><%= status.titleize %></h2>
+          <span class="text-xs bg-gray-200 text-gray-800 rounded-full px-2 py-0.5" id="count-<%= status %>">
+            <%= @tasks_by_status[status]&.count || 0 %>
+          </span>
+        </div>
+
+        <div class="kanban-dropzone flex-1 overflow-y-auto space-y-3" data-status="<%= status %>" id="column-<%= status %>">
+          <% (@tasks_by_status[status] || []).each do |task| %>
+            <div class="kanban-card bg-white p-4 rounded-md shadow-sm border border-gray-200 cursor-grab hover:shadow-md transition" draggable="true" data-task-id="<%= task.id %>" data-move-url="<%= move_project_task_path(org_slug: Current.organization.slug, project_id: @project.id, id: task.id) %>">
+              <div class="flex justify-between items-start">
+                <span class="text-xs font-mono font-semibold text-gray-400"><%= @project.key %>-<%= task.id %></span>
+                <span class="text-xs font-medium px-2 py-0.5 rounded <%= priority_color(task.priority) %>"><%= task.priority.capitalize %></span>
+              </div>
+              <h3 class="font-medium text-gray-900 mt-2 text-sm">
+                <%= link_to task.title, project_task_path(org_slug: Current.organization.slug, project_id: @project.id, id: task.id), class: "hover:underline" %>
+              </h3>
+              <div class="mt-4 flex items-center justify-between text-xs text-gray-500">
+                <span><%= task.assignee&.name || "Unassigned" %></span>
+                <% if task.due_date %>
+                  <span><%= task.due_date.strftime("%b %d") %></span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function() {
+    let draggedCard = null;
+
+    $('.kanban-card').on('dragstart', function(e) {
+      draggedCard = this;
+      $(this).addClass('opacity-50');
+      e.originalEvent.dataTransfer.setData('text/plain', $(this).data('task-id'));
+    });
+
+    $('.kanban-card').on('dragend', function() {
+      $(this).removeClass('opacity-50');
+    });
+
+    $('.kanban-dropzone').on('dragover', function(e) {
+      e.preventDefault();
+      $(this).addClass('bg-gray-200');
+    });
+
+    $('.kanban-dropzone').on('dragleave', function() {
+      $(this).removeClass('bg-gray-200');
+    });
+
+    $('.kanban-dropzone').on('drop', function(e) {
+      e.preventDefault();
+      $(this).removeClass('bg-gray-200');
+
+      if (!draggedCard) return;
+
+      const newStatus = $(this).data('status');
+      const taskCard = $(draggedCard);
+      const moveUrl = taskCard.data('move-url');
+
+      $(this).append(taskCard);
+      const newPosition = $(this).children('.kanban-card').length;
+
+      $.ajax({
+        url: moveUrl,
+        method: 'PATCH',
+        headers: {
+          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        },
+        contentType: 'application/json',
+        data: JSON.stringify({ status: newStatus, position: newPosition }),
+        success: function(response) {
+          console.log("Task moved successfully");
+        },
+        error: function() {
+          alert('Could not move task. Rolling back.');
+          location.reload();
+        }
+      });
+    });
+  });
+</script>
