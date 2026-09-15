@@ -1,0 +1,11 @@
+<div class="p-8">
+  <h1 class="text-2xl font-bold mb-6">Projects</h1>
+  <div class="grid grid-cols-3 gap-6">
+    <% @projects.each do |p| %>
+      <div class="bg-white p-6 rounded border">
+        <h2 class="font-bold text-lg"><%= link_to p.name, tenant_project_path(org_slug: Current.organization.slug, id: p.id) %></h2>
+        <span class="text-xs font-mono text-gray-500"><%= p.key %></span>
+      </div>
+    <% end %>
+  </div>
+</div>

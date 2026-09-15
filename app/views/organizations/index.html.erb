@@ -1,0 +1,9 @@
+<div class="max-w-2xl mx-auto py-12 px-4">
+  <h1 class="text-2xl font-bold mb-6">Select a Workspace</h1>
+  <div class="space-y-3">
+    <% @organizations.each do |org| %>
+      <%= link_to org.name, tenant_dashboard_path(org_slug: org.slug), class: "block p-4 bg-white border rounded hover:border-indigo-500 font-semibold" %>
+    <% end %>
+    <%= link_to "Create New Workspace", new_organization_path, class: "block text-center py-3 bg-indigo-600 text-white rounded font-medium" %>
+  </div>
+</div>

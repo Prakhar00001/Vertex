@@ -1,0 +1,23 @@
+<div class="max-w-4xl mx-auto py-10 px-4 space-y-6">
+  <div class="border-b pb-4">
+    <span class="text-xs font-mono text-gray-500"><%= @project.key %>-<%= @task.id %></span>
+    <h1 class="text-2xl font-bold"><%= @task.title %></h1>
+    <div class="flex space-x-2 mt-2">
+      <span class="text-xs px-2 py-1 rounded bg-gray-200"><%= @task.status.titleize %></span>
+      <span class="text-xs px-2 py-1 rounded bg-indigo-100 text-indigo-800"><%= @task.priority.capitalize %></span>
+    </div>
+  </div>
+  <div class="text-sm text-gray-700 leading-relaxed"><%= @task.description %></div>
+  <div class="border-t pt-6 space-y-4">
+    <h2 class="text-lg font-bold">Comments</h2>
+    <div class="space-y-3">
+      <% @comments.each do |c| %>
+        <%= render "comments/comment", comment: c %>
+      <% end %>
+    </div>
+    <%= form_with model: [@project, @task, @comment], url: tenant_project_task_comments_path(org_slug: Current.organization.slug, project_id: @project.id, task_id: @task.id) do |f| %>
+      <%= f.text_area :body, class: "w-full border rounded p-2 text-sm", placeholder: "Write a reply...", required: true %>
+      <%= f.submit "Comment", class: "mt-2 px-4 py-2 bg-indigo-600 text-white rounded text-sm font-medium" %>
+    <% end %>
+  </div>
+</div>

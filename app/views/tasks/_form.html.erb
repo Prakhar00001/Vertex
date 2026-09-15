@@ -1,0 +1,25 @@
+<%= form_with model: [@project, @task], url: @task.new_record? ? tenant_project_tasks_path(org_slug: Current.organization.slug, project_id: @project.id) : tenant_project_task_path(org_slug: Current.organization.slug, project_id: @project.id, id: @task.id), class: "space-y-4" do |f| %>
+  <div>
+    <%= f.label :title, class: "block text-sm font-medium" %>
+    <%= f.text_field :title, class: "w-full border rounded p-2 text-sm", required: true %>
+  </div>
+  <div>
+    <%= f.label :description, class: "block text-sm font-medium" %>
+    <%= f.text_area :description, class: "w-full border rounded p-2 text-sm", rows: 4 %>
+  </div>
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <%= f.label :status, class: "block text-sm font-medium" %>
+      <%= f.select :status, Task::STATUSES.map { |s| [s.titleize, s] }, {}, class: "w-full border rounded p-2 text-sm" %>
+    </div>
+    <div>
+      <%= f.label :priority, class: "block text-sm font-medium" %>
+      <%= f.select :priority, Task::PRIORITIES.map { |p| [p.capitalize, p] }, {}, class: "w-full border rounded p-2 text-sm" %>
+    </div>
+  </div>
+  <div>
+    <%= f.label :assignee_id, "Assignee", class: "block text-sm font-medium" %>
+    <%= f.collection_select :assignee_id, Current.organization.users, :id, :name, { include_blank: "Unassigned" }, class: "w-full border rounded p-2 text-sm" %>
+  </div>
+  <%= f.submit class: "w-full py-2 bg-indigo-600 text-white rounded font-medium cursor-pointer" %>
+<% end %>

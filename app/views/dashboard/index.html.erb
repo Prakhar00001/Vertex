@@ -1,0 +1,30 @@
+<div class="p-8 max-w-7xl mx-auto space-y-8">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900">Workspace Overview</h1>
+    <p class="text-sm text-gray-500">Real-time status across projects and assignments.</p>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">My Assigned Tasks</h2>
+      <div class="divide-y divide-gray-100">
+        <% (@my_tasks || []).each do |task| %>
+          <div class="py-3 flex justify-between items-center text-sm">
+            <span class="font-medium text-gray-800"><%= task.title %></span>
+            <span class="text-xs px-2 py-1 rounded bg-gray-100"><%= task.status.titleize %></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">Recent Audit Activity</h2>
+      <div class="space-y-3">
+        <% (@recent_activities || []).each do |log| %>
+          <div class="text-xs text-gray-600 flex justify-between">
+            <span><strong><%= log.user.name %></strong> <%= log.action.humanize.downcase %></span>
+            <span class="text-gray-400"><%= log.created_at.strftime("%H:%M") %></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

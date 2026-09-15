@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Vertex - Multi-Tenant Workspace</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application.tailwind", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
+    <%= render "shared/navbar" %>
+    <%= render "shared/flash" %>
+    <main class="flex-1">
+      <%= yield %>
+    </main>
+  </body>
+</html>
