@@ -32,7 +32,7 @@
 
 ---
 
-## ⚡ Key Highlights
+## Key Highlights
 
 * **Path-Scoped Strict Multi-Tenancy (`/o/:org_slug/...`)**
   * Zero-leak data isolation enforced at the routing, application controller, and database index levels.
@@ -53,7 +53,7 @@
 
 ---
 
-## 🏛 System Architecture
+##  System Architecture
 
 Vertex implements a layered service architecture that keeps the controller layer thin, abstracts transactional domain business logic into dedicated services, and maintains authorization invariants via policies:
 
@@ -104,7 +104,7 @@ Vertex implements a layered service architecture that keeps the controller layer
                                           └─────────────────────────────┘
 
 
-## 🔒 Multi-Tenancy Isolation Model
+##  Multi-Tenancy Isolation Model
 
 Multi-tenancy in Vertex uses path-based routing combined with explicit active tenant context binding:
 
